@@ -15,7 +15,7 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
   
   // Split the story into exactly 5 parts
   const pages = story.text.split('\n\n').reduce((acc, paragraph, index, array) => {
-    const partIndex = Math.floor(index / Math.ceil(array.length / 5));
+    const partIndex = Math.floor(index / 2); // 2 paragraphs per part
     if (!acc[partIndex]) acc[partIndex] = '';
     acc[partIndex] += paragraph + '\n\n';
     return acc;
@@ -45,7 +45,7 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
                 alt={`Story illustration ${currentPage}`}
                 className="w-full h-48 object-cover rounded-lg mb-4"
               />
-              <div className="text-lg overflow-y-auto flex-grow">
+              <div className="text-lg overflow-y-auto flex-grow max-h-[calc(100%-13rem)]">
                 {pages[currentPage - 1]}
               </div>
             </>
@@ -58,7 +58,7 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
             alt={`Story illustration ${currentPage + 1}`}
             className="w-full h-48 object-cover rounded-lg mb-4"
           />
-          <div className="text-lg overflow-y-auto flex-grow">
+          <div className="text-lg overflow-y-auto flex-grow max-h-[calc(100%-13rem)]">
             {pages[currentPage]}
           </div>
         </div>
@@ -85,7 +85,7 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
       </div>
       <button
         onClick={onNewStory}
-        className="absolute top-4 right-4 bg-amber-600 text-white p-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 flex items-center justify-center"
+        className="absolute bottom-4 right-4 bg-amber-600 text-white p-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 flex items-center justify-center"
       >
         <RefreshCw className="mr-2" size={18} />
         New Story
