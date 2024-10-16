@@ -85,4 +85,10 @@ exports.handler = async (event, context) => {
       },
     };
   }
+
+console.log('Story generated');
+const story = completion.choices[0].message.content;
+console.log('Generated story:', story); // Add this line to log the generated story
+
+
 };
