@@ -1,0 +1,84 @@
+const { OpenAI } = require('openai');
+const axios = require('axios');
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
+
+exports.handler = async (event, context) => {
+  console.log('Function invoked with event:', JSON.stringify(event));
+  console.log('Context:', JSON.stringify(context));
+  
+  if (event.httpMethod !== 'POST') {
+    return { statusCode: 405, body: 'Method Not Allowed' };
+  }
+
+  try {
+    console.log('Parsing request body');
+    const { age, theme, duration, characterName } = JSON.parse(event.body);
+
+    if (!age || !theme || !duration || !characterName) {
+      console.log('Missing required fields:', { age, theme, duration, characterName });
+      return { statusCode: 400, body: JSON.stringify({ error: 'Missing required fields' }) };
+    }
+
+    console.log('Creating story prompt');
+    const prompt = `Create a ${duration} bedtime story for a ${age} year old child. 
+    The story should have a ${theme} theme and the main character's name is ${characterName}. 
+    The story should be divided into 3 parts, each part ending with a period.`;
+
+    console.log('Calling OpenAI API');
+    const completion = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [{ role: "user", content: prompt }],
+    });
+
+    console.log('Story generated');
+    const story = completion.choices[0].message.content;
+
+    console.log('Generating image prompts');
+    const imagePrompts = await openai.chat.completions.create({
+      model: "gpt-3.5-turbo",
+      messages: [
+        { role: "user", content: "Based on the following story, generate 3 short image prompts, one for each part of the story. Each prompt should be a brief description of a scene from that part of the story." },
+        { role: "assistant", content: story },
+        { role: "user", content: "Generate the image prompts" },
+      ],
+    });
+
+    const imageDescriptions = imagePrompts.choices[0].message.content.split('\n');
+
+    console.log('Fetching images');
+    const images = await Promise.all(
+      imageDescriptions.map(async (description) => {
+        try {
+          const response = await axios.get(`https://source.unsplash.com/featured/?${encodeURIComponent(description)}`);
+          return response.request.res.responseUrl;
+        } catch (error) {
+          console.error('Error fetching image:', error);
+          return 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+        }
+      })
+    );
+
+    console.log('Returning successful response');
+    return {
+      statusCode: 200,
+      body: JSON.stringify({ text: story, images }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    };
+  } catch (error) {
+    console.error('Error:', error);
+    return {
+      statusCode: 500,
+      body: JSON.stringify({ error: 'An error occurred while generating the story.', details: error.message }),
+      headers: {
+        'Content-Type': 'application/json',
+        'Access-Control-Allow-Origin': '*',
+      },
+    };
+  }
+};
