@@ -25,7 +25,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full mx-auto">
       <div className="mb-4">
         <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">Age of child</label>
         <select
