@@ -9,10 +9,12 @@ function App() {
   const [story, setStory] = useState<{ text: string; images: string[] } | null>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<string>('');
 
   const generateStory = async (formData: any) => {
     setLoading(true);
     setError(null);
+    setTheme(formData.theme);
     try {
       console.log('Sending request to:', `${API_URL}/generate-story`);
       console.log('Form data:', formData);
@@ -31,14 +33,29 @@ function App() {
     }
   };
 
+  const getBackgroundClass = () => {
+    switch (theme) {
+      case 'adventure':
+        return 'bg-gradient-to-br from-green-100 to-blue-200';
+      case 'fantasy':
+        return 'bg-gradient-to-br from-purple-100 to-pink-200';
+      case 'animals':
+        return 'bg-gradient-to-br from-yellow-100 to-green-200';
+      case 'space':
+        return 'bg-gradient-to-br from-indigo-100 to-purple-200';
+      default:
+        return 'bg-gradient-to-br from-gray-100 to-gray-200';
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-200 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-indigo-800 mb-8">Bedtime Story Generator</h1>
+    <div className={`min-h-screen ${getBackgroundClass()} flex flex-col items-center justify-center p-4`}>
+      <h1 className="text-4xl font-bold text-amber-800 mb-8">Bedtime Story Generator</h1>
       {error && <div className="text-red-600 mb-4">{error}</div>}
       {!story ? (
         <StoryForm onSubmit={generateStory} loading={loading} />
       ) : (
-        <StoryBook story={story} onNewStory={() => setStory(null)} />
+        <StoryBook story={story} theme={theme} onNewStory={() => setStory(null)} />
       )}
     </div>
   );
