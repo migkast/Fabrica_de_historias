@@ -1,97 +1,69 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import axios from 'axios';
+import StoryForm from './components/StoryForm';
+import StoryBook from './components/StoryBook';
 
-interface StoryBookProps {
-  story: {
-    text: string;
-    images: string[];
-  };
-  theme: string;
-  onNewStory: () => void;
-}
+const API_URL = '/.netlify/functions';
 
-const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
-  const [currentPage, setCurrentPage] = useState(0);
-  const pages = story.text.split('\n\n').reduce((acc, curr, index) => {
-    if (index % 2 === 0) {
-      acc.push(curr);
-    } else {
-      acc[acc.length - 1] += '\n\n' + curr;
+function App() {
+  const [story, setStory] = useState<{ text: string; images: string[] } | null>(null);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [theme, setTheme] = useState<string>('');
+
+  const generateStory = async (formData: any) => {
+    setLoading(true);
+    setError(null);
+    setTheme(formData.theme);
+    try {
+      console.log('Sending request to:', `${API_URL}/generate-story`);
+      console.log('Form data:', formData);
+      const response = await axios.post(`${API_URL}/generate-story`, formData);
+      console.log('Response:', response.data);
+      if (response.data && response.data.text && response.data.images) {
+        setStory(response.data);
+      } else {
+        throw new Error('Invalid response format');
+      }
+    } catch (error) {
+      console.error('Error generating story:', error);
+      if (axios.isAxiosError(error)) {
+        setError(`Error: ${error.response?.status} - ${error.response?.data?.error || error.message}`);
+      } else {
+        setError('An unexpected error occurred. Please try again.');
+      }
+      setStory(null);
+    } finally {
+      setLoading(false);
     }
-    return acc;
-  }, [] as string[]);
-
-  const nextPage = () => {
-    if (currentPage < pages.length - 1) {
-      setCurrentPage(currentPage + 1);
-    }
   };
 
-  const prevPage = () => {
-    if (currentPage > 0) {
-      setCurrentPage(currentPage - 1);
+  const getBackgroundClass = () => {
+    switch (theme) {
+      case 'adventure':
+        return 'bg-gradient-to-br from-green-100 to-blue-200';
+      case 'fantasy':
+        return 'bg-gradient-to-br from-purple-100 to-pink-200';
+      case 'animals':
+        return 'bg-gradient-to-br from-yellow-100 to-green-200';
+      case 'space':
+        return 'bg-gradient-to-br from-indigo-100 to-purple-200';
+      default:
+        return 'bg-gradient-to-br from-gray-100 to-gray-200';
     }
   };
 
   return (
-    <div className="relative w-full max-w-4xl aspect-[3/2] bg-amber-100 rounded-lg shadow-2xl overflow-hidden book-border">
-      <div className="absolute inset-0 flex">
-        {/* Left page */}
-        <div className="w-1/2 p-8 flex flex-col justify-between border-r border-amber-200">
-          {currentPage > 0 && (
-            <>
-              <img
-                src={story.images[currentPage - 1]}
-                alt={`Story illustration ${currentPage}`}
-                className="w-full h-48 object-cover rounded-lg mb-4"
-              />
-              <div className="text-lg overflow-y-auto flex-grow">
-                {pages[currentPage - 1]}
-              </div>
-            </>
-          )}
-        </div>
-        {/* Right page */}
-        <div className="w-1/2 p-8 flex flex-col justify-between">
-          <img
-            src={story.images[currentPage]}
-            alt={`Story illustration ${currentPage + 1}`}
-            className="w-full h-48 object-cover rounded-lg mb-4"
-          />
-          <div className="text-lg overflow-y-auto flex-grow">
-            {pages[currentPage]}
-          </div>
-        </div>
-      </div>
-      {/* Navigation */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
-        <button
-          onClick={prevPage}
-          disabled={currentPage === 0}
-          className="bg-amber-600 text-white p-2 rounded-full disabled:opacity-50"
-        >
-          <ChevronLeft size={24} />
-        </button>
-        <span className="text-sm text-amber-800">
-          Page {currentPage * 2 + 1}-{Math.min((currentPage + 1) * 2, pages.length)} of {pages.length}
-        </span>
-        <button
-          onClick={nextPage}
-          disabled={currentPage === Math.ceil(pages.length / 2) - 1}
-          className="bg-amber-600 text-white p-2 rounded-full disabled:opacity-50"
-        >
-          <ChevronRight size={24} />
-        </button>
-      </div>
-      <button
-        onClick={onNewStory}
-        className="absolute top-4 right-4 bg-amber-600 text-white p-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 flex items-center justify-center"
-      >
-        <RefreshCw className="mr-2" size={18} />
-        New Story
-      </button>
+    <div className={`min-h-screen ${getBackgroundClass()} flex flex-col items-center justify-center p-4`}>
+      <h1 className="text-4xl font-bold text-amber-800 mb-8">Bedtime Story Generator</h1>
+      {error && <div className="text-red-600 mb-4">{error}</div>}
+      {loading && <div className="text-amber-600 mb-4">Generating your story...</div>}
+      {!loading && !story && <StoryForm onSubmit={generateStory} loading={loading} />}
+      {!loading && story && story.text && story.images && (
+        <StoryBook story={story} theme={theme} onNewStory={() => setStory(null)} />
+      )}
     </div>
   );
-};
+}
 
-export default StoryBook;
+export default App;
