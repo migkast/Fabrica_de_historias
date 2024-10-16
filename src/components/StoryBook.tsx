@@ -16,11 +16,15 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
 
   useEffect(() => {
     const splitStory = () => {
-      const parts = story.text.split(/Part \d+:/i).filter(part => part.trim() !== '');
+      // Split the story by "Part X:" pattern, including the part header
+      const parts = story.text.split(/(?=Part \d+:)/i).filter(part => part.trim() !== '');
+      
       const formattedParts = parts.map((part, index) => ({
-        text: `Part ${index + 1}:${part.trim()}`,
+        text: part.trim(),
         image: story.images[index] || 'https://via.placeholder.com/1024x1024?text=Image+Not+Available'
       }));
+      
+      console.log('Formatted parts:', formattedParts); // Debug log
       setPages(formattedParts);
     };
 
@@ -61,9 +65,11 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
             />
           </div>
           <div className="w-full md:w-1/2 bg-white rounded-2xl p-6 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4 text-indigo-600">Part {currentPage + 1}</h2>
+            <h2 className="text-2xl font-bold mb-4 text-indigo-600">
+              {pages[currentPage].text.split('\n')[0]}
+            </h2>
             <div className="text-lg overflow-y-auto max-h-64 md:max-h-80">
-              {pages[currentPage].text}
+              {pages[currentPage].text.split('\n').slice(1).join('\n')}
             </div>
           </div>
         </div>
