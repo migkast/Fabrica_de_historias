@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 
 interface StoryBookProps {
@@ -12,14 +12,16 @@ interface StoryBookProps {
 
 const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  
-  // Split the story into exactly 5 parts
-  const pages = story.text.split('\n\n').reduce((acc, paragraph, index, array) => {
-    const partIndex = Math.floor(index / 2); // 2 paragraphs per part
-    if (!acc[partIndex]) acc[partIndex] = '';
-    acc[partIndex] += paragraph + '\n\n';
-    return acc;
-  }, [] as string[]).map(part => part.trim());
+  const [pages, setPages] = useState<string[]>([]);
+
+  useEffect(() => {
+    const splitStory = () => {
+      const parts = story.text.split(/Part \d+:/i).filter(part => part.trim() !== '');
+      setPages(parts);
+    };
+
+    splitStory();
+  }, [story.text]);
 
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
@@ -33,59 +35,55 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
     }
   };
 
+  const getThemeColor = () => {
+    switch (theme) {
+      case 'adventure': return 'bg-green-100';
+      case 'fantasy': return 'bg-purple-100';
+      case 'animals': return 'bg-yellow-100';
+      case 'space': return 'bg-blue-100';
+      default: return 'bg-pink-100';
+    }
+  };
+
   return (
-    <div className="relative w-full max-w-4xl aspect-[3/2] bg-amber-100 rounded-lg shadow-2xl overflow-hidden book-border">
-      <div className="absolute inset-0 flex">
-        {/* Left page */}
-        <div className="w-1/2 p-8 flex flex-col justify-between border-r border-amber-200">
-          {currentPage > 0 && (
-            <>
-              <img
-                src={story.images[currentPage - 1] || 'https://via.placeholder.com/1024x1024?text=Loading+Image'}
-                alt={`Story illustration ${currentPage}`}
-                className="w-full h-48 object-cover rounded-lg mb-4"
-              />
-              <div className="text-lg overflow-y-auto flex-grow max-h-[calc(100%-13rem)]">
-                {pages[currentPage - 1]}
-              </div>
-            </>
-          )}
-        </div>
-        {/* Right page */}
-        <div className="w-1/2 p-8 flex flex-col justify-between">
+    <div className={`w-full max-w-4xl ${getThemeColor()} rounded-3xl shadow-2xl overflow-hidden p-8`}>
+      <div className="flex flex-col md:flex-row gap-8 items-center">
+        <div className="w-full md:w-1/2">
           <img
             src={story.images[currentPage] || 'https://via.placeholder.com/1024x1024?text=Loading+Image'}
             alt={`Story illustration ${currentPage + 1}`}
-            className="w-full h-48 object-cover rounded-lg mb-4"
+            className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
           />
-          <div className="text-lg overflow-y-auto flex-grow max-h-[calc(100%-13rem)]">
+        </div>
+        <div className="w-full md:w-1/2 bg-white rounded-2xl p-6 shadow-lg">
+          <h2 className="text-2xl font-bold mb-4 text-indigo-600">Part {currentPage + 1}</h2>
+          <div className="text-lg overflow-y-auto max-h-64 md:max-h-80">
             {pages[currentPage]}
           </div>
         </div>
       </div>
-      {/* Navigation */}
-      <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex items-center space-x-4">
+      <div className="mt-8 flex justify-between items-center">
         <button
           onClick={prevPage}
           disabled={currentPage === 0}
-          className="bg-amber-600 text-white p-2 rounded-full disabled:opacity-50"
+          className="bg-indigo-500 text-white p-3 rounded-full disabled:opacity-50 hover:bg-indigo-600 transition-colors"
         >
           <ChevronLeft size={24} />
         </button>
-        <span className="text-sm text-amber-800">
+        <span className="text-lg font-semibold text-indigo-800">
           Page {currentPage + 1} of {pages.length}
         </span>
         <button
           onClick={nextPage}
           disabled={currentPage === pages.length - 1}
-          className="bg-amber-600 text-white p-2 rounded-full disabled:opacity-50"
+          className="bg-indigo-500 text-white p-3 rounded-full disabled:opacity-50 hover:bg-indigo-600 transition-colors"
         >
           <ChevronRight size={24} />
         </button>
       </div>
       <button
         onClick={onNewStory}
-        className="absolute bottom-4 right-4 bg-amber-600 text-white p-2 rounded-md hover:bg-amber-700 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 flex items-center justify-center"
+        className="mt-6 w-full bg-indigo-500 text-white p-3 rounded-xl hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center transition-colors"
       >
         <RefreshCw className="mr-2" size={18} />
         New Story
