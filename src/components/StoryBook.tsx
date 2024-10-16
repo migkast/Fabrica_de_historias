@@ -12,16 +12,20 @@ interface StoryBookProps {
 
 const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [pages, setPages] = useState<string[]>([]);
+  const [pages, setPages] = useState<{ text: string; image: string }[]>([]);
 
   useEffect(() => {
     const splitStory = () => {
       const parts = story.text.split(/Part \d+:/i).filter(part => part.trim() !== '');
-      setPages(parts.map((part, index) => `Part ${index + 1}:${part}`));
+      const formattedParts = parts.map((part, index) => ({
+        text: `Part ${index + 1}:${part.trim()}`,
+        image: story.images[index] || 'https://via.placeholder.com/1024x1024?text=Image+Not+Available'
+      }));
+      setPages(formattedParts);
     };
 
     splitStory();
-  }, [story.text]);
+  }, [story.text, story.images]);
 
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
@@ -47,21 +51,23 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
 
   return (
     <div className={`w-full max-w-4xl ${getThemeColor()} rounded-3xl shadow-2xl overflow-hidden p-8`}>
-      <div className="flex flex-col md:flex-row gap-8 items-center">
-        <div className="w-full md:w-1/2">
-          <img
-            src={story.images[currentPage] || 'https://via.placeholder.com/1024x1024?text=Loading+Image'}
-            alt={`Story illustration ${currentPage + 1}`}
-            className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
-          />
-        </div>
-        <div className="w-full md:w-1/2 bg-white rounded-2xl p-6 shadow-lg">
-          <h2 className="text-2xl font-bold mb-4 text-indigo-600">Part {currentPage + 1}</h2>
-          <div className="text-lg overflow-y-auto max-h-64 md:max-h-80">
-            {pages[currentPage]}
+      {pages.length > 0 && (
+        <div className="flex flex-col md:flex-row gap-8 items-center">
+          <div className="w-full md:w-1/2">
+            <img
+              src={pages[currentPage].image}
+              alt={`Story illustration ${currentPage + 1}`}
+              className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
+            />
+          </div>
+          <div className="w-full md:w-1/2 bg-white rounded-2xl p-6 shadow-lg">
+            <h2 className="text-2xl font-bold mb-4 text-indigo-600">Part {currentPage + 1}</h2>
+            <div className="text-lg overflow-y-auto max-h-64 md:max-h-80">
+              {pages[currentPage].text}
+            </div>
           </div>
         </div>
-      </div>
+      )}
       <div className="mt-8 flex justify-between items-center">
         <button
           onClick={prevPage}
