@@ -17,7 +17,7 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
   useEffect(() => {
     const splitStory = () => {
       const parts = story.text.split(/Part \d+:/i).filter(part => part.trim() !== '');
-      setPages(parts);
+      setPages(parts.map((part, index) => `Part ${index + 1}:${part}`));
     };
 
     splitStory();
