@@ -25,7 +25,7 @@ exports.handler = async (event, context) => {
     console.log('Creating story prompt');
     const prompt = `Create a ${duration} bedtime story for a ${age} year old child. 
     The story should have a ${theme} theme and the main character's name is ${characterName}. 
-    The story should be divided into 3 parts, each part ending with a period.`;
+    The story should be divided into 5 parts, each part with 2 paragraphs. The story should be engaging and have a moral to it!`;
 
     console.log('Calling OpenAI API for story generation');
     const completion = await openai.chat.completions.create({
@@ -40,7 +40,7 @@ exports.handler = async (event, context) => {
     const imagePrompts = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "user", content: "Based on the following story, generate 3 short image prompts, one for each part of the story. Each prompt should be a brief description of a scene from that part of the story, suitable for image generation." },
+        { role: "user", content: "Based on the following story, generate 5 short image prompts, one for each part of the story. Each prompt should be a brief description of a scene from that part of the story, suitable for image generation." },
         { role: "assistant", content: story },
         { role: "user", content: "Generate the image prompts" },
       ],
