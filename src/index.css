@@ -3,30 +3,19 @@
 @tailwind utilities;
 
 body {
-  background-image: url('https://images.unsplash.com/photo-1590579491624-f98f36d4c763?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80');
+  background-image: url('https://cdn.pixabay.com/photo/2020/08/26/03/23/toy-story-background-5518507_1280.jpg');
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
   background-attachment: fixed;
 }
 
-.book-border {
-  box-shadow: 
-    0 0 0 5px #fef3c7,
-    0 0 0 10px #fcd34d,
-    0 0 0 15px #fbbf24,
-    0 20px 25px -5px rgba(0, 0, 0, 0.1),
-    0 10px 10px -5px rgba(0, 0, 0, 0.04);
-  transform: perspective(1000px) rotateY(3deg);
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-20px); }
+  100% { transform: translateY(0px); }
 }
 
-.book-border::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  bottom: 0;
-  left: 50%;
-  width: 4px;
-  background: linear-gradient(to bottom, transparent, #92400e, transparent);
-  transform: translateX(-50%);
+.floating {
+  animation: float 6s ease-in-out infinite;
 }
