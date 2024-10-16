@@ -27,7 +27,7 @@ exports.handler = async (event, context) => {
     The story should have a ${theme} theme and the main character's name is ${characterName}. 
     The story should be divided into 3 parts, each part ending with a period.`;
 
-    console.log('Calling OpenAI API');
+    console.log('Calling OpenAI API for story generation');
     const completion = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [{ role: "user", content: prompt }],
@@ -40,7 +40,7 @@ exports.handler = async (event, context) => {
     const imagePrompts = await openai.chat.completions.create({
       model: "gpt-3.5-turbo",
       messages: [
-        { role: "user", content: "Based on the following story, generate 3 short image prompts, one for each part of the story. Each prompt should be a brief description of a scene from that part of the story." },
+        { role: "user", content: "Based on the following story, generate 3 short image prompts, one for each part of the story. Each prompt should be a brief description of a scene from that part of the story, suitable for image generation." },
         { role: "assistant", content: story },
         { role: "user", content: "Generate the image prompts" },
       ],
@@ -48,15 +48,20 @@ exports.handler = async (event, context) => {
 
     const imageDescriptions = imagePrompts.choices[0].message.content.split('\n');
 
-    console.log('Fetching images');
+    console.log('Generating images with DALL·E 3');
     const images = await Promise.all(
       imageDescriptions.map(async (description) => {
         try {
-          const response = await axios.get(`https://source.unsplash.com/featured/?${encodeURIComponent(description)}`);
-          return response.request.res.responseUrl;
+          const response = await openai.images.generate({
+            model: "dall-e-3",
+            prompt: description,
+            n: 1,
+            size: "1024x1024",
+          });
+          return response.data[0].url;
         } catch (error) {
-          console.error('Error fetching image:', error);
-          return 'https://via.placeholder.com/400x300?text=Image+Not+Available';
+          console.error('Error generating image:', error);
+          return 'https://via.placeholder.com/1024x1024?text=Image+Generation+Failed';
         }
       })
     );
@@ -74,10 +79,10 @@ exports.handler = async (event, context) => {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'An error occurred while generating the story.', details: error.message }),
+      body: JSON.stringify({ error: 'An error occurred while generating the story and images.', details: error.message }),
       headers: {
         'Content-Type': 'application/json',
-        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Access': '*',
       },
     };
   }
