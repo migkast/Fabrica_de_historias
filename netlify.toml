@@ -4,13 +4,13 @@
   functions = "netlify/functions"
 
 [[redirects]]
-  from = "/*"
-  to = "/index.html"
+  from = "/.netlify/functions/*"
+  to = "/.netlify/functions/:splat"
   status = 200
 
 [[redirects]]
-  from = "/.netlify/functions/generate-story"
-  to = "/.netlify/functions/generate-story"
+  from = "/*"
+  to = "/index.html"
   status = 200
 
 [functions]
