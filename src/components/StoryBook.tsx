@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
 
 interface StoryBookProps {
@@ -6,30 +6,19 @@ interface StoryBookProps {
     text: string;
     images: string[];
   };
-  theme: string;
   onNewStory: () => void;
 }
 
-const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
+const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const [pages, setPages] = useState<{ text: string; image: string }[]>([]);
-
-  useEffect(() => {
-    const splitStory = () => {
-      // Split the story by "Part X:" pattern, including the part header
-      const parts = story.text.split(/(?=Part \d+:)/i).filter(part => part.trim() !== '');
-      
-      const formattedParts = parts.map((part, index) => ({
-        text: part.trim(),
-        image: story.images[index] || 'https://via.placeholder.com/1024x1024?text=Image+Not+Available'
-      }));
-      
-      console.log('Formatted parts:', formattedParts); // Debug log
-      setPages(formattedParts);
-    };
-
-    splitStory();
-  }, [story.text, story.images]);
+  const pages = story.text.split('\n\n').reduce((acc, curr, index) => {
+    if (index % 2 === 0) {
+      acc.push(curr);
+    } else {
+      acc[acc.length - 1] += '\n\n' + curr;
+    }
+    return acc;
+  }, [] as string[]);
 
   const nextPage = () => {
     if (currentPage < pages.length - 1) {
@@ -43,62 +32,43 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, theme, onNewStory }) => {
     }
   };
 
-  const getThemeColor = () => {
-    switch (theme) {
-      case 'adventure': return 'bg-green-100';
-      case 'fantasy': return 'bg-purple-100';
-      case 'animals': return 'bg-yellow-100';
-      case 'space': return 'bg-blue-100';
-      default: return 'bg-pink-100';
-    }
-  };
-
   return (
-    <div className={`w-full max-w-4xl ${getThemeColor()} rounded-3xl shadow-2xl overflow-hidden p-8`}>
-      {pages.length > 0 && (
-        <div className="flex flex-col md:flex-row gap-8 items-center">
-          <div className="w-full md:w-1/2">
-            <img
-              src={pages[currentPage].image}
-              alt={`Story illustration ${currentPage + 1}`}
-              className="w-full h-64 md:h-96 object-cover rounded-2xl shadow-lg"
-            />
-          </div>
-          <div className="w-full md:w-1/2 bg-white rounded-2xl p-6 shadow-lg">
-            <h2 className="text-2xl font-bold mb-4 text-indigo-600">
-              {pages[currentPage].text.split('\n')[0]}
-            </h2>
-            <div className="text-lg overflow-y-auto max-h-64 md:max-h-80">
-              {pages[currentPage].text.split('\n').slice(1).join('\n')}
-            </div>
-          </div>
-        </div>
-      )}
-      <div className="mt-8 flex justify-between items-center">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+      <div className="aspect-w-16 aspect-h-9 mb-4">
+        <img
+          src={story.images[currentPage]}
+          alt={`Story illustration ${currentPage + 1}`}
+          className="object-cover rounded-lg w-full h-64"
+        />
+      </div>
+      <div className="text-lg mb-4 min-h-[200px] overflow-y-auto">
+        {pages[currentPage]}
+      </div>
+      <div className="flex justify-between items-center">
         <button
           onClick={prevPage}
           disabled={currentPage === 0}
-          className="bg-indigo-500 text-white p-3 rounded-full disabled:opacity-50 hover:bg-indigo-600 transition-colors"
+          className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
         >
           <ChevronLeft size={24} />
         </button>
-        <span className="text-lg font-semibold text-indigo-800">
+        <span className="text-sm text-gray-500">
           Page {currentPage + 1} of {pages.length}
         </span>
         <button
           onClick={nextPage}
           disabled={currentPage === pages.length - 1}
-          className="bg-indigo-500 text-white p-3 rounded-full disabled:opacity-50 hover:bg-indigo-600 transition-colors"
+          className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
         >
           <ChevronRight size={24} />
         </button>
       </div>
       <button
         onClick={onNewStory}
-        className="mt-6 w-full bg-indigo-500 text-white p-3 rounded-xl hover:bg-indigo-600 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center transition-colors"
+        className="mt-4 w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center"
       >
         <RefreshCw className="mr-2" size={18} />
-        New Story
+        Generate New Story
       </button>
     </div>
   );
