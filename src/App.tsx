@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StoryForm from './components/StoryForm';
 import StoryBook from './components/StoryBook';
@@ -11,18 +11,14 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstImageLoaded, setFirstImageLoaded] = useState(false);
-  const [loadingProgress, setLoadingProgress] = useState(0);
 
   const generateStory = async (formData: any) => {
     setLoading(true);
     setError(null);
     setFirstImageLoaded(false);
-    setLoadingProgress(0);
     try {
-      setLoadingProgress(20);
       const response = await axios.post(`${API_URL}/generate-story`, formData);
       setStory(response.data);
-      setLoadingProgress(50);
       generateImages(response.data.text);
     } catch (error) {
       console.error('Error generating story:', error);
@@ -44,25 +40,20 @@ function App() {
         const response = await axios.post(`${API_URL}/generate-image`, { prompt });
         newImages[i] = response.data.imageUrl;
         setStory(prevStory => prevStory ? { ...prevStory, images: [...newImages] } : null);
-        if (i === 0) {
-          setFirstImageLoaded(true);
-          setLoadingProgress(100);
-          setLoading(false);
-        } else {
-          setLoadingProgress(50 + (i * 10));
-        }
+        if (i === 0) setFirstImageLoaded(true);
       } catch (error) {
         console.error('Error generating image:', error);
       }
     }
+    setLoading(false);
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-yellow-200 to-pink-200 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-purple-600 mb-8 font-comic-sans">Magical Bedtime Story Generator</h1>
-      {error && <div className="text-red-600 mb-4 bg-white p-2 rounded-lg">{error}</div>}
+    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-200 flex flex-col items-center justify-center p-4">
+      <h1 className="text-4xl font-bold text-indigo-800 mb-8">Bedtime Story Generator</h1>
+      {error && <div className="text-red-600 mb-4">{error}</div>}
       {!story || loading ? (
-        loading ? <Loader progress={loadingProgress} /> : <StoryForm onSubmit={generateStory} loading={loading} />
+        loading ? <Loader /> : <StoryForm onSubmit={generateStory} loading={loading} />
       ) : (
         firstImageLoaded && <StoryBook story={story} onNewStory={() => setStory(null)} />
       )}
