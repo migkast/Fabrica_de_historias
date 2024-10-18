@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Rocket } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 const Loader: React.FC = () => {
   const [progress, setProgress] = useState(0);
@@ -36,11 +36,11 @@ const Loader: React.FC = () => {
           ></div>
         </div>
         <div className="absolute inset-0 flex items-center justify-center">
-          <Rocket size={48} className="text-indigo-600 animate-bounce" />
+          <BookOpen size={48} className="text-indigo-600 animate-bounce" />
         </div>
       </div>
-      <p className="text-2xl font-bold text-indigo-800 mb-2">Blasting off to story land!</p>
-      <p className="text-lg font-semibold text-indigo-600">{progress}% complete</p>
+      <p className="text-2xl font-bold text-indigo-800 mb-2">Criando sua história mágica!</p>
+      <p className="text-lg font-semibold text-indigo-600">{progress}% concluído</p>
     </div>
   );
 };
