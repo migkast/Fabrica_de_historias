@@ -12,7 +12,8 @@ interface StoryBookProps {
 const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
   
-  const pages = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '').map(part => part.trim());
+  const storyParts = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '');
+  const pages = storyParts.map(part => part.trim());
 
   const nextPage = () => {
     if (currentPage < 4) {
@@ -29,11 +30,17 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   return (
     <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full transform transition-all hover:scale-105">
       <div className="aspect-w-16 aspect-h-9 mb-4">
-        <img
-          src={story.images[currentPage]}
-          alt={`Story illustration ${currentPage + 1}`}
-          className="object-cover rounded-lg w-full h-64 transition-all duration-300 ease-in-out transform hover:scale-105"
-        />
+        {story.images[currentPage] ? (
+          <img
+            src={story.images[currentPage]}
+            alt={`Story illustration ${currentPage + 1}`}
+            className="object-cover rounded-lg w-full h-64 transition-all duration-300 ease-in-out transform hover:scale-105"
+          />
+        ) : (
+          <div className="w-full h-64 bg-gray-200 rounded-lg flex items-center justify-center">
+            <div className="animate-spin rounded-full h-16 w-16 border-t-2 border-b-2 border-blue-500"></div>
+          </div>
+        )}
       </div>
       <div className="text-lg mb-4 min-h-[200px] overflow-y-auto bg-blue-50 p-4 rounded-lg">
         <h3 className="font-bold mb-2 text-blue-800">Chapter {currentPage + 1}:</h3>
