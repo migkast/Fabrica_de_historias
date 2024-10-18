@@ -10,8 +10,8 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
   const [formData, setFormData] = useState({
     age: '',
     theme: '',
+    duration: '',
     characterName: '',
-    sideCharacter: '',
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLSelectElement | HTMLInputElement>) => {
@@ -26,34 +26,33 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
 
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full">
-      <h2 className="text-2xl font-bold text-purple-600 mb-4 font-comic-sans">Create Your Story</h2>
       <div className="mb-4">
-        <label htmlFor="age" className="block text-lg font-medium text-purple-600 mb-1 font-comic-sans">How old are you?</label>
+        <label htmlFor="age" className="block text-sm font-medium text-gray-700 mb-1">Age of child</label>
         <select
           id="age"
           name="age"
           value={formData.age}
           onChange={handleChange}
-          className="w-full p-2 border-2 border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500 font-comic-sans"
+          className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           required
         >
-          <option value="">Pick your age</option>
+          <option value="">Select age</option>
           <option value="3-5">3-5 years</option>
           <option value="6-8">6-8 years</option>
           <option value="9-12">9-12 years</option>
         </select>
       </div>
       <div className="mb-4">
-        <label htmlFor="theme" className="block text-lg font-medium text-purple-600 mb-1 font-comic-sans">What kind of story?</label>
+        <label htmlFor="theme" className="block text-sm font-medium text-gray-700 mb-1">Theme</label>
         <select
           id="theme"
           name="theme"
           value={formData.theme}
           onChange={handleChange}
-          className="w-full p-2 border-2 border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500 font-comic-sans"
+          className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
           required
         >
-          <option value="">Choose a theme</option>
+          <option value="">Select theme</option>
           <option value="adventure">Adventure</option>
           <option value="fantasy">Fantasy</option>
           <option value="animals">Animals</option>
@@ -61,34 +60,38 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
         </select>
       </div>
       <div className="mb-4">
-        <label htmlFor="characterName" className="block text-lg font-medium text-purple-600 mb-1 font-comic-sans">What's the main character's name?</label>
+        <label htmlFor="duration" className="block text-sm font-medium text-gray-700 mb-1">Story duration</label>
+        <select
+          id="duration"
+          name="duration"
+          value={formData.duration}
+          onChange={handleChange}
+          className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          required
+        >
+          <option value="">Select duration</option>
+          <option value="short">Short (5 minutes)</option>
+          <option value="medium">Medium (10 minutes)</option>
+          <option value="long">Long (15 minutes)</option>
+        </select>
+      </div>
+      <div className="mb-6">
+        <label htmlFor="characterName" className="block text-sm font-medium text-gray-700 mb-1">Main character's name</label>
         <input
           type="text"
           id="characterName"
           name="characterName"
           value={formData.characterName}
           onChange={handleChange}
-          className="w-full p-2 border-2 border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500 font-comic-sans"
-          placeholder="Enter a name"
+          className="w-full p-2 border border-gray-300 rounded-md focus:ring-indigo-500 focus:border-indigo-500"
+          placeholder="Enter character name"
           required
-        />
-      </div>
-      <div className="mb-6">
-        <label htmlFor="sideCharacter" className="block text-lg font-medium text-purple-600 mb-1 font-comic-sans">Side character's name (optional)</label>
-        <input
-          type="text"
-          id="sideCharacter"
-          name="sideCharacter"
-          value={formData.sideCharacter}
-          onChange={handleChange}
-          className="w-full p-2 border-2 border-purple-300 rounded-md focus:ring-purple-500 focus:border-purple-500 font-comic-sans"
-          placeholder="Enter a name (optional)"
         />
       </div>
       <button
         type="submit"
         disabled={loading}
-        className={`w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white p-3 rounded-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center justify-center font-comic-sans text-lg ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
+        className={`w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
       >
         {loading ? (
           <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
@@ -96,9 +99,9 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         ) : (
-          <Send className="mr-2" size={24} />
+          <Send className="mr-2" size={18} />
         )}
-        {loading ? 'Creating Magic...' : 'Create My Story!'}
+        {loading ? 'Generating...' : 'Generate Story'}
       </button>
     </form>
   );
