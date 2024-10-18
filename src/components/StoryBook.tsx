@@ -37,35 +37,35 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
           className="object-cover rounded-lg w-full h-64"
         />
       </div>
-      <div className="text-lg mb-4 min-h-[200px] overflow-y-auto">
-        <h3 className="font-bold mb-2">Part {currentPage + 1}:</h3>
+      <div className="text-lg mb-4 min-h-[200px] overflow-y-auto font-comic-sans">
+        <h3 className="font-bold mb-2 text-purple-600">Part {currentPage + 1}:</h3>
         {pages[currentPage]}
       </div>
       <div className="flex justify-between items-center">
         <button
           onClick={prevPage}
           disabled={currentPage === 0}
-          className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
+          className="bg-purple-600 text-white p-2 rounded-full disabled:opacity-50 hover:bg-purple-700 transition-colors duration-200"
         >
           <ChevronLeft size={24} />
         </button>
-        <span className="text-sm text-gray-500">
+        <span className="text-sm text-purple-600 font-comic-sans">
           Page {currentPage + 1} of 5
         </span>
         <button
           onClick={nextPage}
           disabled={currentPage === 4}
-          className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
+          className="bg-purple-600 text-white p-2 rounded-full disabled:opacity-50 hover:bg-purple-700 transition-colors duration-200"
         >
           <ChevronRight size={24} />
         </button>
       </div>
       <button
         onClick={onNewStory}
-        className="mt-4 w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center"
+        className="mt-4 w-full bg-gradient-to-r from-pink-500 to-purple-600 text-white p-3 rounded-md hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:ring-offset-2 flex items-center justify-center font-comic-sans text-lg"
       >
-        <RefreshCw className="mr-2" size={18} />
-        Generate New Story
+        <RefreshCw className="mr-2" size={24} />
+        Create Another Magical Story!
       </button>
     </div>
   );
