@@ -49,14 +49,32 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-100 to-purple-200 flex flex-col items-center justify-center p-4">
-      <h1 className="text-4xl font-bold text-indigo-800 mb-8">Bedtime Story Generator</h1>
-      {error && <div className="text-red-600 mb-4">{error}</div>}
-      {!story || loading ? (
-        loading ? <Loader /> : <StoryForm onSubmit={generateStory} loading={loading} />
-      ) : (
-        firstImageLoaded && <StoryBook story={story} onNewStory={() => setStory(null)} />
-      )}
+    <div className="min-h-screen bg-gradient-to-br from-blue-100 to-green-200 flex flex-col items-center justify-center p-4 overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        {[...Array(20)].map((_, i) => (
+          <div
+            key={i}
+            className="absolute animate-float"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+              animationDuration: `${5 + Math.random() * 10}s`
+            }}
+          >
+            {['🚀', '🌟', '🌙', '🪐', '👽'][Math.floor(Math.random() * 5)]}
+          </div>
+        ))}
+      </div>
+      <div className="z-10">
+        <h1 className="text-5xl font-bold text-blue-800 mb-8 animate-pulse">Bedtime Adventure Generator</h1>
+        {error && <div className="text-red-600 mb-4 animate-bounce">{error}</div>}
+        {!story || loading ? (
+          loading ? <Loader /> : <StoryForm onSubmit={generateStory} loading={loading} />
+        ) : (
+          firstImageLoaded && <StoryBook story={story} onNewStory={() => setStory(null)} />
+        )}
+      </div>
     </div>
   );
 }
