@@ -23,9 +23,9 @@ exports.handler = async (event, context) => {
     }
 
     console.log('Creating story prompt');
-    const prompt = `Create a ${duration} bedtime story for a ${age} year old child. 
+    const prompt = `Create a bedtime story for a ${age} year old child. 
     The story should have a ${theme} theme and the main character's name is ${characterName}. 
-    The story should be divided into 5 parts, each part with 2 paragraphs. The story should be engaging and have a moral to it! Do not mention the word "part x" on the story, it is not needed`;
+     The story should be divided into 5 parts, each part with 2 paragraphs. The story should be engaging and have a moral to it! Make the story either having a twist, very exciting or more sentimental.`;
 
     console.log('Calling OpenAI API for story generation');
     const completion = await openai.chat.completions.create({
