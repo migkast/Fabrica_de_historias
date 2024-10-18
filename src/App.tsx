@@ -62,7 +62,7 @@ function App() {
               animationDuration: `${5 + Math.random() * 10}s`
             }}
           >
-            {['📚', '✨', '🌈', '🦸‍♂️', '🏴‍☠️'][Math.floor(Math.random() * 5)]}
+            {['📚', '✨', '🌈', '🦸‍♂, '🏴‍☠️'][Math.floor(Math.random() * 5)]}
           </div>
         ))}
       </div>
