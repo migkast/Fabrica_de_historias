@@ -1,24 +1,46 @@
-import React from 'react';
-import { Book } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { Rocket } from 'lucide-react';
 
-interface LoaderProps {
-  progress: number;
-}
+const Loader: React.FC = () => {
+  const [progress, setProgress] = useState(0);
 
-const Loader: React.FC<LoaderProps> = ({ progress }) => {
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setProgress((prevProgress) => {
+        const newProgress = prevProgress + 1;
+        return newProgress > 100 ? 100 : newProgress;
+      });
+    }, 50);
+
+    return () => clearInterval(interval);
+  }, []);
+
   return (
-    <div className="flex flex-col items-center justify-center bg-white p-8 rounded-lg shadow-lg">
-      <div className="animate-bounce mb-4">
-        <Book size={64} className="text-purple-600" />
-      </div>
-      <p className="text-2xl font-semibold text-purple-600 mb-4 font-comic-sans">Creating your magical story...</p>
-      <div className="w-64 h-6 bg-gray-200 rounded-full overflow-hidden">
+    <div className="flex flex-col items-center justify-center">
+      <div className="relative w-48 h-48 mb-4">
+        <div className="absolute inset-0 flex items-center justify-center">
+          <div className="w-40 h-40 border-8 border-indigo-200 rounded-full"></div>
+        </div>
         <div 
-          className="h-full bg-gradient-to-r from-pink-400 to-purple-500 transition-all duration-500 ease-out"
-          style={{ width: `${progress}%` }}
-        ></div>
+          className="absolute inset-0 flex items-center justify-center animate-spin"
+          style={{ 
+            animation: 'spin 4s linear infinite',
+            transformOrigin: 'center center'
+          }}
+        >
+          <div 
+            className="w-40 h-40 border-t-8 border-indigo-600 rounded-full"
+            style={{
+              clipPath: `polygon(50% 50%, 50% 0%, ${50 + progress/2}% 0%, ${50 + progress/2}% ${progress}%, ${50 - progress/2}% ${progress}%, ${50 - progress/2}% 0%, 50% 0%)`
+            }}
+          ></div>
+        </div>
+        <div className="absolute inset-0 flex items-center justify-center">
+          <Rocket size={48} className="text-indigo-600 animate-bounce" />
+        </div>
       </div>
-      <div className="mt-2 text-purple-600 font-comic-sans">{progress}% Complete</div>
+      <p className="text-2xl font-bold text-indigo-800 mb-2">Blasting off to story land!</p>
+      <p className="text-lg font-semibold text-indigo-600">{progress}% complete</p>
     </div>
   );
 };
