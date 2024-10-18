@@ -39,7 +39,7 @@ function App() {
     const newImages = Array(5).fill('');
     for (let i = 0; i < 5; i++) {
       try {
-        const prompt = `Scene from a children's story: ${storyParts[i * 2]}${storyParts[i * 2 + 1]}`;
+        const prompt = `Create an image for a Scene from a children's story, the style should be cartoonish or manga or pixar style, the scene is: ${storyParts[i * 2]}${storyParts[i * 2 + 1]}`;
         const response = await axios.post(`${API_URL}/generate-image`, { prompt });
         newImages[i] = response.data.imageUrl;
         setStory(prevStory => prevStory ? { ...prevStory, images: [...newImages] } : null);
