@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Rocket } from 'lucide-react';
+import { BookOpen } from 'lucide-react';
 
 interface StoryFormProps {
   onSubmit: (formData: any) => void;
@@ -10,7 +10,6 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
   const [formData, setFormData] = useState({
     age: '',
     theme: '',
-    duration: '',
     characterName: '',
   });
 
@@ -27,7 +26,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full transform transition-all hover:scale-105">
       <div className="mb-4">
-        <label htmlFor="age" className="block text-lg font-bold text-blue-700 mb-2">How old are you, space cadet?</label>
+        <label htmlFor="age" className="block text-lg font-bold text-blue-700 mb-2">Quantos anos você tem?</label>
         <select
           id="age"
           name="age"
@@ -36,14 +35,14 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
           required
         >
-          <option value="">Pick your age range</option>
-          <option value="3-5">3-5 years (Junior Cadet)</option>
-          <option value="6-8">6-8 years (Space Explorer)</option>
-          <option value="9-12">9-12 years (Star Commander)</option>
+          <option value="">Escolha sua faixa etária</option>
+          <option value="3-5">3-5 anos (Pequeno Aventureiro)</option>
+          <option value="6-8">6-8 anos (Explorador Corajoso)</option>
+          <option value="9-12">9-12 anos (Herói em Treinamento)</option>
         </select>
       </div>
       <div className="mb-4">
-        <label htmlFor="theme" className="block text-lg font-bold text-blue-700 mb-2">Choose your adventure type!</label>
+        <label htmlFor="theme" className="block text-lg font-bold text-blue-700 mb-2">Escolha o tipo de aventura!</label>
         <select
           id="theme"
           name="theme"
@@ -52,31 +51,15 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
           required
         >
-          <option value="">Select your mission</option>
-          <option value="space">Space Odyssey</option>
-          <option value="dinosaurs">Dino Discovery</option>
-          <option value="superheroes">Superhero Squad</option>
-          <option value="pirates">Pirate's Treasure</option>
-        </select>
-      </div>
-      <div className="mb-4">
-        <label htmlFor="duration" className="block text-lg font-bold text-blue-700 mb-2">How long should your adventure be?</label>
-        <select
-          id="duration"
-          name="duration"
-          value={formData.duration}
-          onChange={handleChange}
-          className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
-          required
-        >
-          <option value="">Choose mission length</option>
-          <option value="short">Short (5 minutes)</option>
-          <option value="medium">Medium (10 minutes)</option>
-          <option value="long">Long (15 minutes)</option>
+          <option value="">Selecione sua missão</option>
+          <option value="fantasy">Mundo Mágico</option>
+          <option value="dinosaurs">Aventura Jurássica</option>
+          <option value="superheroes">Esquadrão de Super-Heróis</option>
+          <option value="pirates">Caça ao Tesouro Pirata</option>
         </select>
       </div>
       <div className="mb-6">
-        <label htmlFor="characterName" className="block text-lg font-bold text-blue-700 mb-2">What's your hero name?</label>
+        <label htmlFor="characterName" className="block text-lg font-bold text-blue-700 mb-2">Qual é o nome do seu herói?</label>
         <input
           type="text"
           id="characterName"
@@ -84,7 +67,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           value={formData.characterName}
           onChange={handleChange}
           className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
-          placeholder="Enter your awesome name"
+          placeholder="Digite o nome incrível do seu herói"
           required
         />
       </div>
@@ -99,9 +82,9 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         ) : (
-          <Rocket className="mr-2" size={24} />
+          <BookOpen className="mr-2" size={24} />
         )}
-        {loading ? 'Preparing for Launch...' : 'Blast Off!'}
+        {loading ? 'Criando sua história...' : 'Começar a Aventura!'}
       </button>
     </form>
   );
