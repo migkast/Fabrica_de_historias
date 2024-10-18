@@ -12,7 +12,6 @@ interface StoryBookProps {
 const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
   
-  // Split the story into exactly 5 parts
   const storyParts = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '');
   const pages = storyParts.map(part => part.trim());
 
@@ -29,43 +28,43 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full">
+    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full transform transition-all hover:scale-105">
       <div className="aspect-w-16 aspect-h-9 mb-4">
         <img
           src={story.images[currentPage]}
           alt={`Story illustration ${currentPage + 1}`}
-          className="object-cover rounded-lg w-full h-64"
+          className="object-cover rounded-lg w-full h-64 transition-all duration-300 ease-in-out transform hover:scale-105"
         />
       </div>
-      <div className="text-lg mb-4 min-h-[200px] overflow-y-auto">
-        <h3 className="font-bold mb-2">Part {currentPage + 1}:</h3>
+      <div className="text-lg mb-4 min-h-[200px] overflow-y-auto bg-blue-50 p-4 rounded-lg">
+        <h3 className="font-bold mb-2 text-blue-800">Chapter {currentPage + 1}:</h3>
         {pages[currentPage]}
       </div>
       <div className="flex justify-between items-center">
         <button
           onClick={prevPage}
           disabled={currentPage === 0}
-          className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
+          className="bg-blue-600 text-white p-3 rounded-full disabled:opacity-50 transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <ChevronLeft size={24} />
         </button>
-        <span className="text-sm text-gray-500">
+        <span className="text-lg font-bold text-blue-800">
           Page {currentPage + 1} of 5
         </span>
         <button
           onClick={nextPage}
           disabled={currentPage === 4}
-          className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
+          className="bg-blue-600 text-white p-3 rounded-full disabled:opacity-50 transition-all hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2"
         >
           <ChevronRight size={24} />
         </button>
       </div>
       <button
         onClick={onNewStory}
-        className="mt-4 w-full bg-indigo-600 text-white p-2 rounded-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 flex items-center justify-center"
+        className="mt-6 w-full bg-green-600 text-white p-3 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center text-xl font-bold transition-all hover:transform hover:scale-105"
       >
-        <RefreshCw className="mr-2" size={18} />
-        Generate New Story
+        <RefreshCw className="mr-2" size={24} />
+        Start a New Adventure!
       </button>
     </div>
   );
