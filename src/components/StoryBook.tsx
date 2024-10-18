@@ -12,8 +12,7 @@ interface StoryBookProps {
 const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
   
-  const storyParts = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '');
-  const pages = storyParts.map(part => part.trim());
+  const pages = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '').map(part => part.trim());
 
   const nextPage = () => {
     if (currentPage < 4) {
