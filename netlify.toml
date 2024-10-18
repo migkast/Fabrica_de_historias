@@ -4,22 +4,17 @@
   functions = "netlify/functions"
 
 [[redirects]]
-  from = "/.netlify/functions/*"
-  to = "/.netlify/functions/:splat"
-  status = 200
-
-[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
 
+[[redirects]]
+  from = "/.netlify/functions/generate-story"
+  to = "/.netlify/functions/generate-story"
+  status = 200
+
 [functions]
   node_bundler = "esbuild"
-  included_files = ["netlify/functions/**"]
-  external_node_modules = ["axios", "openai"]
-
-[functions."generate-story"]
-  timeout = 60
 
 [[headers]]
   for = "/*"
