@@ -11,14 +11,17 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [firstImageLoaded, setFirstImageLoaded] = useState(false);
+  const [storyReady, setStoryReady] = useState(false);
 
   const generateStory = async (formData: any) => {
     setLoading(true);
     setError(null);
     setFirstImageLoaded(false);
+    setStoryReady(false);
     try {
       const response = await axios.post(`${API_URL}/generate-story`, formData);
       setStory(response.data);
+      setStoryReady(true);
       generateImages(response.data.text);
     } catch (error) {
       console.error('Error generating story:', error);
@@ -40,12 +43,14 @@ function App() {
         const response = await axios.post(`${API_URL}/generate-image`, { prompt });
         newImages[i] = response.data.imageUrl;
         setStory(prevStory => prevStory ? { ...prevStory, images: [...newImages] } : null);
-        if (i === 0) setFirstImageLoaded(true);
+        if (i === 0) {
+          setFirstImageLoaded(true);
+          setLoading(false);
+        }
       } catch (error) {
         console.error('Error generating image:', error);
       }
     }
-    setLoading(false);
   };
 
   return (
@@ -70,7 +75,7 @@ function App() {
         <h1 className="text-5xl font-bold text-blue-800 mb-8 animate-pulse">Bedtime Adventure Generator</h1>
         {error && <div className="text-red-600 mb-4 animate-bounce">{error}</div>}
         {!story || loading ? (
-          loading ? <Loader /> : <StoryForm onSubmit={generateStory} loading={loading} />
+          loading ? <Loader storyReady={storyReady} /> : <StoryForm onSubmit={generateStory} loading={loading} />
         ) : (
           firstImageLoaded && <StoryBook story={story} onNewStory={() => setStory(null)} />
         )}
