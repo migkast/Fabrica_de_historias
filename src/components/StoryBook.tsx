@@ -11,17 +11,16 @@ interface StoryBookProps {
 
 const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
-  const pages = story.text.split('\n\n').reduce((acc, curr, index) => {
-    if (index % 2 === 0) {
-      acc.push(curr);
-    } else {
-      acc[acc.length - 1] += '\n\n' + curr;
-    }
-    return acc;
-  }, [] as string[]);
+  
+  // Split the story into exactly 5 parts
+  const storyParts = story.text.split('\n\n');
+  const pages = Array(5).fill('').map((_, index) => {
+    const startIndex = index * 2;
+    return storyParts.slice(startIndex, startIndex + 2).join('\n\n');
+  });
 
   const nextPage = () => {
-    if (currentPage < pages.length - 1) {
+    if (currentPage < 4) {
       setCurrentPage(currentPage + 1);
     }
   };
@@ -53,11 +52,11 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
           <ChevronLeft size={24} />
         </button>
         <span className="text-sm text-gray-500">
-          Page {currentPage + 1} of {pages.length}
+          Page {currentPage + 1} of 5
         </span>
         <button
           onClick={nextPage}
-          disabled={currentPage === pages.length - 1}
+          disabled={currentPage === 4}
           className="bg-indigo-600 text-white p-2 rounded-full disabled:opacity-50"
         >
           <ChevronRight size={24} />
