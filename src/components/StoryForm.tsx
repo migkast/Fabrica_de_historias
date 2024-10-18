@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BookOpen } from 'lucide-react';
+import { Rocket } from 'lucide-react';
 
 interface StoryFormProps {
   onSubmit: (formData: any) => void;
@@ -26,7 +26,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
   return (
     <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full transform transition-all hover:scale-105">
       <div className="mb-4">
-        <label htmlFor="age" className="block text-lg font-bold text-blue-700 mb-2">Quantos anos você tem?</label>
+        <label htmlFor="age" className="block text-lg font-bold text-blue-700 mb-2">How old are you, space cadet?</label>
         <select
           id="age"
           name="age"
@@ -35,14 +35,14 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
           required
         >
-          <option value="">Escolha sua faixa etária</option>
-          <option value="3-5">3-5 anos (Pequeno Aventureiro)</option>
-          <option value="6-8">6-8 anos (Explorador Corajoso)</option>
-          <option value="9-12">9-12 anos (Herói em Treinamento)</option>
+          <option value="">Pick your age range</option>
+          <option value="3-5">3-5 years (Junior Cadet)</option>
+          <option value="6-8">6-8 years (Space Explorer)</option>
+          <option value="9-12">9-12 years (Star Commander)</option>
         </select>
       </div>
       <div className="mb-4">
-        <label htmlFor="theme" className="block text-lg font-bold text-blue-700 mb-2">Escolha o tipo de aventura!</label>
+        <label htmlFor="theme" className="block text-lg font-bold text-blue-700 mb-2">Choose your adventure type!</label>
         <select
           id="theme"
           name="theme"
@@ -51,15 +51,15 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
           required
         >
-          <option value="">Selecione sua missão</option>
-          <option value="fantasy">Mundo Mágico</option>
-          <option value="dinosaurs">Aventura Jurássica</option>
-          <option value="superheroes">Esquadrão de Super-Heróis</option>
-          <option value="pirates">Caça ao Tesouro Pirata</option>
+          <option value="">Select your mission</option>
+          <option value="space">Space Odyssey</option>
+          <option value="dinosaurs">Dino Discovery</option>
+          <option value="superheroes">Superhero Squad</option>
+          <option value="pirates">Pirate's Treasure</option>
         </select>
       </div>
       <div className="mb-6">
-        <label htmlFor="characterName" className="block text-lg font-bold text-blue-700 mb-2">Qual é o nome do seu herói?</label>
+        <label htmlFor="characterName" className="block text-lg font-bold text-blue-700 mb-2">What's your hero name?</label>
         <input
           type="text"
           id="characterName"
@@ -67,7 +67,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           value={formData.characterName}
           onChange={handleChange}
           className="w-full p-3 border-2 border-blue-300 rounded-md focus:ring-blue-500 focus:border-blue-500 text-lg"
-          placeholder="Digite o nome incrível do seu herói"
+          placeholder="Enter your awesome name"
           required
         />
       </div>
@@ -82,9 +82,9 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
             <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
           </svg>
         ) : (
-          <BookOpen className="mr-2" size={24} />
+          <Rocket className="mr-2" size={24} />
         )}
-        {loading ? 'Criando sua história...' : 'Começar a Aventura!'}
+        {loading ? 'Preparing for Launch...' : 'Blast Off!'}
       </button>
     </form>
   );
