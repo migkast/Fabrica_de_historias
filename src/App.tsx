@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import StoryForm from './components/StoryForm';
 import StoryBook from './components/StoryBook';
@@ -28,6 +28,28 @@ function App() {
       }
     } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    if (story && story.images.every(img => img.includes('placeholder'))) {
+      // If all images are placeholders, start generating real images
+      generateImages();
+    }
+  }, [story]);
+
+  const generateImages = async () => {
+    if (!story) return;
+
+    const newImages = [...story.images];
+    for (let i = 0; i < story.images.length; i++) {
+      try {
+        const response = await axios.post(`${API_URL}/generate-image`, { prompt: `Scene from a children's story: ${story.text.split('\n\n')[i]}` });
+        newImages[i] = response.data.imageUrl;
+        setStory(prevStory => prevStory ? { ...prevStory, images: newImages } : null);
+      } catch (error) {
+        console.error('Error generating image:', error);
+      }
     }
   };
 
