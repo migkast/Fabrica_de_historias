@@ -13,11 +13,8 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
   
   // Split the story into exactly 5 parts
-  const storyParts = story.text.split('\n\n');
-  const pages = Array(5).fill('').map((_, index) => {
-    const startIndex = index * 2;
-    return storyParts.slice(startIndex, startIndex + 2).join('\n\n');
-  });
+  const storyParts = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '');
+  const pages = storyParts.map(part => part.trim());
 
   const nextPage = () => {
     if (currentPage < 4) {
@@ -41,6 +38,7 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
         />
       </div>
       <div className="text-lg mb-4 min-h-[200px] overflow-y-auto">
+        <h3 className="font-bold mb-2">Part {currentPage + 1}:</h3>
         {pages[currentPage]}
       </div>
       <div className="flex justify-between items-center">
