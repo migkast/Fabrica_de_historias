@@ -24,7 +24,7 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg max-w-md w-full transform transition-all hover:scale-105">
+    <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-lg w-full transform transition-all hover:scale-105">
       <div className="mb-4">
         <label htmlFor="age" className="block text-lg font-bold text-blue-700 mb-2">How old are you, space cadet?</label>
         <select
@@ -56,6 +56,10 @@ const StoryForm: React.FC<StoryFormProps> = ({ onSubmit, loading }) => {
           <option value="dinosaurs">Dino Discovery</option>
           <option value="superheroes">Superhero Squad</option>
           <option value="pirates">Pirate's Treasure</option>
+          <option value="fantasy">Enchanted Realm</option>
+          <option value="underwater">Ocean Explorer</option>
+          <option value="time-travel">Time Traveler</option>
+          <option value="jungle">Jungle Adventure</option>
         </select>
       </div>
       <div className="mb-6">
