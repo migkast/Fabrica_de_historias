@@ -71,9 +71,9 @@ function App() {
           </div>
         ))}
       </div>
-      <div className="z-10">
-        <h1 className="text-5xl font-bold text-blue-800 mb-8 animate-pulse">Bedtime Adventure Generator</h1>
-        {error && <div className="text-red-600 mb-4 animate-bounce">{error}</div>}
+      <div className="z-10 w-full max-w-md">
+        <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-8 animate-pulse text-center">Bedtime Adventure Generator</h1>
+        {error && <div className="text-red-600 mb-4 animate-bounce text-center">{error}</div>}
         {!story || loading ? (
           loading ? <Loader storyReady={storyReady} /> : <StoryForm onSubmit={generateStory} loading={loading} />
         ) : (
