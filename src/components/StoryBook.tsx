@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { ChevronLeft, ChevronRight, RefreshCw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, RefreshCw, Save } from 'lucide-react';
 
 interface StoryBookProps {
   story: {
@@ -7,10 +7,12 @@ interface StoryBookProps {
     images: string[];
   };
   onNewStory: () => void;
+  onSaveStory: (title: string) => void;
 }
 
-const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
+const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory, onSaveStory }) => {
   const [currentPage, setCurrentPage] = useState(0);
+  const [saveTitle, setSaveTitle] = useState('');
   
   const storyParts = story.text.split(/Part \d+:/g).filter(part => part.trim() !== '');
   const pages = storyParts.map(part => part.trim());
@@ -27,8 +29,15 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
     }
   };
 
+  const handleSave = () => {
+    if (saveTitle.trim()) {
+      onSaveStory(saveTitle);
+      setSaveTitle('');
+    }
+  };
+
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg max-w-2xl w-full transform transition-all hover:scale-105">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full transform transition-all hover:scale-105">
       <div className="aspect-w-16 aspect-h-9 mb-4">
         {story.images[currentPage] ? (
           <img
@@ -65,9 +74,24 @@ const StoryBook: React.FC<StoryBookProps> = ({ story, onNewStory }) => {
           <ChevronRight size={24} />
         </button>
       </div>
+      <div className="mt-6 flex items-center">
+        <input
+          type="text"
+          value={saveTitle}
+          onChange={(e) => setSaveTitle(e.target.value)}
+          placeholder="Enter a title to save"
+          className="flex-grow p-2 border-2 border-blue-300 rounded-l-md focus:outline-none focus:ring-2 focus:ring-blue-500"
+        />
+        <button
+          onClick={handleSave}
+          className="bg-green-600 text-white p-2 rounded-r-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center"
+        >
+          <Save size={24} />
+        </button>
+      </div>
       <button
         onClick={onNewStory}
-        className="mt-6 w-full bg-green-600 text-white p-3 rounded-md hover:bg-green-700 focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-offset-2 flex items-center justify-center text-xl font-bold transition-all hover:transform hover:scale-105"
+        className="mt-4 w-full bg-blue-600 text-white p-3 rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 flex items-center justify-center text-xl font-bold transition-all hover:transform hover:scale-105"
       >
         <RefreshCw className="mr-2" size={24} />
         Start a New Adventure!
