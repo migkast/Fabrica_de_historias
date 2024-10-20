@@ -3,6 +3,7 @@ import axios from 'axios';
 import StoryForm from './components/StoryForm';
 import StoryBook from './components/StoryBook';
 import Loader from './components/Loader';
+import SavedStories from './components/SavedStories';
 
 const API_URL = '/.netlify/functions';
 
@@ -12,6 +13,15 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [firstImageLoaded, setFirstImageLoaded] = useState(false);
   const [storyReady, setStoryReady] = useState(false);
+  const [savedStories, setSavedStories] = useState<Array<{ id: string; title: string; image: string }>>([]);
+
+  useEffect(() => {
+    // Load saved stories from localStorage
+    const loadedStories = localStorage.getItem('savedStories');
+    if (loadedStories) {
+      setSavedStories(JSON.parse(loadedStories));
+    }
+  }, []);
 
   const generateStory = async (formData: any) => {
     setLoading(true);
@@ -39,7 +49,7 @@ function App() {
     const newImages = Array(5).fill('');
     for (let i = 0; i < 5; i++) {
       try {
-        const prompt = `Create an image for children. Image should not have any text on it. The style should be cartoonish or manga or pixar style. It should focus on the action of the plot, which is: ${storyParts[i * 2]}${storyParts[i * 2 + 1]}`;
+        const prompt = `Scene from a children's story: ${storyParts[i * 2]}${storyParts[i * 2 + 1]}`;
         const response = await axios.post(`${API_URL}/generate-image`, { prompt });
         newImages[i] = response.data.imageUrl;
         setStory(prevStory => prevStory ? { ...prevStory, images: [...newImages] } : null);
@@ -50,6 +60,19 @@ function App() {
       } catch (error) {
         console.error('Error generating image:', error);
       }
+    }
+  };
+
+  const saveStory = (title: string) => {
+    if (story) {
+      const newSavedStory = {
+        id: Date.now().toString(),
+        title,
+        image: story.images[0] || 'https://via.placeholder.com/300x200?text=Story+Image'
+      };
+      const updatedSavedStories = [...savedStories, newSavedStory];
+      setSavedStories(updatedSavedStories);
+      localStorage.setItem('savedStories', JSON.stringify(updatedSavedStories));
     }
   };
 
@@ -71,14 +94,21 @@ function App() {
           </div>
         ))}
       </div>
-      <div className="z-10 w-full max-w-md">
+      <div className="z-10 w-full max-w-6xl">
         <h1 className="text-4xl md:text-5xl font-bold text-blue-800 mb-8 animate-pulse text-center">Bedtime Adventure Generator</h1>
         {error && <div className="text-red-600 mb-4 animate-bounce text-center">{error}</div>}
-        {!story || loading ? (
-          loading ? <Loader storyReady={storyReady} /> : <StoryForm onSubmit={generateStory} loading={loading} />
-        ) : (
-          firstImageLoaded && <StoryBook story={story} onNewStory={() => setStory(null)} />
-        )}
+        <div className="flex flex-col md:flex-row gap-8">
+          <div className="w-full md:w-1/2">
+            {!story || loading ? (
+              loading ? <Loader storyReady={storyReady} /> : <StoryForm onSubmit={generateStory} loading={loading} />
+            ) : (
+              firstImageLoaded && <StoryBook story={story} onNewStory={() => setStory(null)} onSaveStory={saveStory} />
+            )}
+          </div>
+          <div className="w-full md:w-1/2">
+            <SavedStories stories={savedStories} />
+          </div>
+        </div>
       </div>
     </div>
   );
