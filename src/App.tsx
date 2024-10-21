@@ -37,6 +37,12 @@ function App() {
       console.error('Error generating story:', error);
       if (axios.isAxiosError(error)) {
         setError(`Error: ${error.response?.status} - ${error.response?.data?.error || error.message}`);
+        if (error.response?.data?.details) {
+          console.error('Error details:', error.response.data.details);
+        }
+        if (error.response?.data?.stack) {
+          console.error('Error stack:', error.response.data.stack);
+        }
       } else {
         setError('An unexpected error occurred. Please try again.');
       }
