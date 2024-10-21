@@ -18,13 +18,20 @@ exports.handler = async (event, context) => {
 
     if (!age || !theme || !characterName) {
       console.log('Missing required fields:', { age, theme, characterName });
-      return { statusCode: 400, body: JSON.stringify({ error: 'Missing required fields' }) };
+      return { 
+        statusCode: 400, 
+        body: JSON.stringify({ error: 'Missing required fields' }),
+        headers: {
+          'Content-Type': 'application/json',
+          'Access-Control-Allow-Origin': '*',
+        }
+      };
     }
 
     console.log('Creating story prompt');
     const prompt = `Create a bedtime story for a ${age} year old child. 
     The story should have a ${theme} theme and the main character's name is ${characterName}. 
-    The story should be divided into 5 parts, each part with 2 paragraphs. The story should be engaging and have a moral to it! Make the story have action, having a twist and being very exciting.`;
+    The story should be divided into 5 parts, each part with 2 paragraphs. The story should be engaging and have a moral to it! Make the story either having a twist, very exciting or more sentimental.`;
 
     console.log('Calling OpenAI API for story generation');
     const completion = await openai.chat.completions.create({
@@ -51,7 +58,11 @@ exports.handler = async (event, context) => {
     console.error('Error:', error);
     return {
       statusCode: 500,
-      body: JSON.stringify({ error: 'An error occurred while generating the story.', details: error.message }),
+      body: JSON.stringify({ 
+        error: 'An error occurred while generating the story.', 
+        details: error.message,
+        stack: error.stack
+      }),
       headers: {
         'Content-Type': 'application/json',
         'Access-Control-Allow-Origin': '*',
